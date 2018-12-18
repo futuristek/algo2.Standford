@@ -41,14 +41,25 @@ public:
 		return S[numItems][knapsack_size];
 	}
 
-	void print() {
-		for (int i = 0; i < numItems + 1; i++) {
-			for (int x = 0; x < knapsack_size + 1; x++) {
-				cout << S[i][x] << " ";
-			}
-			cout << endl;
-		}
-	}
+	vector<int> optimalSet() {
+        if (selected.empty()) {
+            optimalSetImpl(numItems, knapsack_size);
+        }
+
+        return selected;
+    }
+
+    void optimalSetImpl(int i, int x) {
+        if (i == 0)
+            return;
+
+        if (S[i][x] > S[i - 1][x]) {
+            selected.push_back(i);
+            optimalSetImpl(i - 1, x - weight[i]);
+        } else {
+            optimalSetImpl(i - 1, x);
+        }
+    }
 
 private:
 	int knapsack_size;
@@ -56,9 +67,16 @@ private:
 	vector<int> value;
 	vector<int> weight;
 	vector<vector<int> > S;
+    vector<int> selected;
 };
 
 int main() {
 	Knapsack knapsack("knapsack1.txt");
 	cout << knapsack.maxValue() << endl;
+
+    auto selected = knapsack.optimalSet();
+    for (auto x: selected) {
+        cout << x << " ";
+    }
+    cout << endl;
 }
