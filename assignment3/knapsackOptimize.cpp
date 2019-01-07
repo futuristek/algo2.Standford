@@ -4,6 +4,7 @@
 #include <sstream>
 #include <vector>
 #include <map>
+#include <utility>
 using namespace std;
 
 class Knapsack {
@@ -62,6 +63,26 @@ public:
 
 	}
 
+    vector<int> optimalSet() {
+        if (selected.empty()) {
+            optimalSetImpl(numItems, knapsack_size);
+        }
+
+        return selected;
+    }
+
+    void optimalSetImpl(int i, int x) {
+        if (i == 0)
+            return;
+
+        if (S[make_pair(i, x)] > S[make_pair(i - 1, x)]) {
+            selected.push_back(i);
+            optimalSetImpl(i - 1, x - weight[i]);
+        } else {
+            optimalSetImpl(i - 1, x);
+        }
+    }
+
 	int getNumItems() {
 		return numItems;
 	}
@@ -79,7 +100,8 @@ private:
 	int numItems;
 	vector<int> value;
 	vector<int> weight;
-	map<pair<int, int>, int> S;
+    vector<int> selected;
+    map<pair<int, int>, int> S;
 };
 
 int main() {
